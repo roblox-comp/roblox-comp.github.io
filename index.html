@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ROBLOX TURNIERE · COMMUNITY</title>
+  <!-- Font Awesome für Icons (optional, aber stylish) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    /* ----- RESET & BASE ----- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #0b0a0a;
+      color: #fff;
+      min-height: 200vh; /* zum Scrollen */
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ----- GLAS HEADER (mittig oben, fixed) ----- */
+    .header-glass {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(90%, 1100px);
+      padding: 18px 32px;
+      background: rgba(20, 0, 0, 0.25);
+      backdrop-filter: blur(12px) saturate(160%);
+      -webkit-backdrop-filter: blur(12px) saturate(160%);
+      border: 1px solid rgba(255, 60, 60, 0.15);
+      border-radius: 60px;
+      box-shadow: 0 8px 32px rgba(255, 0, 0, 0.15);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 999;
+      /* Animation: Fade-In-Out beim Scrollen → via JS / keyframes 
+         aber auch ein permanentes leichtes Glow-Pulsing */
+      animation: headerPulseGlow 3s infinite alternate ease-in-out;
+      transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    /* glow & border pulsing */
+    @keyframes headerPulseGlow {
+      0% {
+        box-shadow: 0 8px 28px rgba(255, 0, 0, 0.2);
+        border-color: rgba(255, 60, 60, 0.1);
+      }
+      100% {
+        box-shadow: 0 8px 48px rgba(255, 20, 20, 0.6), 0 0 60px rgba(200, 0, 0, 0.2);
+        border-color: rgba(255, 80, 80, 0.5);
+      }
+    }
+
+    /* Logo / Titel */
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-icon {
+      font-size: 2rem;
+      color: #ff3b3b;
+      filter: drop-shadow(0 0 8px #ff2222);
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+    .logo-icon:hover {
+      transform: scale(1.1) rotate(-4deg);
+      filter: drop-shadow(0 0 20px #ff4444);
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: 1.7rem;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #ff6a6a, #ff2222);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 30px rgba(255, 0, 0, 0.3);
+      transition: text-shadow 0.3s ease;
+    }
+    .logo-text:hover {
+      text-shadow: 0 0 50px rgba(255, 40, 40, 0.8);
+    }
+
+    /* Navigation */
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+    }
+    .nav-links a {
+      color: #f0eaea;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1rem;
+      letter-spacing: 0.3px;
+      padding: 6px 4px;
+      position: relative;
+      transition: color 0.3s ease, transform 0.2s ease;
+      text-shadow: 0 0 6px rgba(255, 0, 0, 0.1);
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 0%;
+      height: 2px;
+      background: #ff3333;
+      box-shadow: 0 0 16px #ff2a2a;
+      transition: width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .nav-links a:hover {
+      color: #ffffff;
+      transform: translateY(-1px);
+      text-shadow: 0 0 20px #ff4444, 0 0 40px #ff2222;
+    }
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    /* CTA-Button im Header */
+    .btn-join {
+      background: rgba(255, 30, 30, 0.15);
+      border: 1px solid #ff3a3a;
+      color: white;
+      padding: 8px 22px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.15);
+      transition: all 0.3s ease;
+      cursor: default;
+      letter-spacing: 0.5px;
+      background: rgba(180, 0, 0, 0.2);
+    }
+    .btn-join i {
+      margin-right: 6px;
+      color: #ff6666;
+    }
+    .btn-join:hover {
+      background: #cc2222;
+      border-color: #ff7777;
+      box-shadow: 0 0 48px #ff2a2a, 0 0 80px #cc0000;
+      transform: scale(1.03);
+      color: #fff;
+    }
+
+    /* ----- HERO BEREICH (Inhalt) ----- */
+    .hero {
+      margin-top: 120px; /* Platz für fixed header */
+      padding: 40px 20px 60px;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.6rem, 10vw, 4.8rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, #ff7a7a, #ff2222, #cc0000);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 40px rgba(255, 0, 0, 0.3);
+      margin-bottom: 20px;
+      letter-spacing: -1px;
+      animation: glowPulseText 2.8s infinite alternate;
+    }
+    @keyframes glowPulseText {
+      0% { text-shadow: 0 0 20px #ff2222, 0 0 40px #aa0000; }
+      100% { text-shadow: 0 0 60px #ff5555, 0 0 120px #ff0000, 0 0 200px #880000; }
+    }
+
+    .hero p {
+      font-size: 1.3rem;
+      max-width: 700px;
+      color: #e6dddd;
+      text-shadow: 0 0 12px rgba(255, 0, 0, 0.15);
+      margin-bottom: 40px;
+      line-height: 1.6;
+      background: rgba(0,0,0,0.2);
+      padding: 14px 28px;
+      border-radius: 60px;
+      backdrop-filter: blur(2px);
+      border: 1px solid rgba(255,60,60,0.08);
+    }
+
+    .hero p i {
+      color: #ff4d4d;
+      margin: 0 4px;
+    }
+
+    /* Karten / Spiel‑Grid */
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 30px;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .game-card {
+      background: rgba(20, 5, 5, 0.55);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 40, 40, 0.2);
+      border-radius: 28px;
+      padding: 28px 16px 22px;
+      transition: all 0.35s cubic-bezier(0.15, 0.75, 0.4, 1);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+      text-align: center;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+      cursor: default;
+    }
+
+    /* glow-gradient-hover + transitions */
+    .game-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 60, 60, 0.1), transparent 70%);
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      pointer-events: none;
+    }
+    .game-card:hover::before {
+      opacity: 1;
+    }
+    .game-card:hover {
+      transform: translateY(-12px) scale(1.02);
+      border-color: #ff4d4d;
+      box-shadow: 0 20px 50px rgba(255, 0, 0, 0.4), 0 0 80px rgba(200, 0, 0, 0.2);
+      background: rgba(35, 5, 5, 0.7);
+    }
+
+    .game-card i {
+      font-size: 3.6rem;
+      color: #ff3b3b;
+      filter: drop-shadow(0 0 18px #ff2222);
+      margin-bottom: 12px;
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+    .game-card:hover i {
+      transform: scale(1.1) rotate(2deg);
+      filter: drop-shadow(0 0 36px #ff4444);
+    }
+
+    .game-card h3 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      background: linear-gradient(135deg, #ff8a8a, #ff3a3a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .game-card p {
+      font-size: 0.95rem;
+      color: #d0c5c5;
+      text-shadow: 0 0 6px rgba(255,0,0,0.1);
+      margin-top: 6px;
+    }
+
+    .robux-badge {
+      display: inline-block;
+      margin-top: 12px;
+      background: rgba(255, 200, 0, 0.1);
+      padding: 6px 18px;
+      border-radius: 40px;
+      border: 1px solid #ffbb33;
+      color: #ffcc66;
+      font-weight: 600;
+      font-size: 0.9rem;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 0 20px rgba(255, 200, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+    .game-card:hover .robux-badge {
+      background: rgba(255, 180, 0, 0.2);
+      border-color: #ffdd55;
+      box-shadow: 0 0 40px #ffaa00;
+      color: #fff3c0;
+    }
+
+    /* ----- SCROLL-FADE-IN-OUT (via Intersection Observer) ----- */
+    .fade-section {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1), transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+      will-change: opacity, transform;
+    }
+    .fade-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* kleiner Footer */
+    .footer-note {
+      margin-top: 80px;
+      padding: 30px 20px 20px;
+      border-top: 1px solid rgba(255,40,40,0.15);
+      text-align: center;
+      color: #aa9999;
+      font-size: 0.9rem;
+      letter-spacing: 0.5px;
+      background: rgba(0,0,0,0.2);
+      backdrop-filter: blur(4px);
+      width: 100%;
+    }
+    .footer-note i {
+      color: #ff4d4d;
+      margin: 0 4px;
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .header-glass {
+        flex-direction: column;
+        gap: 10px;
+        padding: 14px 18px;
+        top: 12px;
+        border-radius: 40px;
+        width: 95%;
+      }
+      .nav-links {
+        gap: 16px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .btn-join {
+        padding: 6px 18px;
+        font-size: 0.8rem;
+      }
+      .hero {
+        margin-top: 150px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- GLAS HEADER – mittig oben, fixed, blurry, glow -->
+  <header class="header-glass" id="mainHeader">
+    <div class="logo-area">
+      <i class="fas fa-trophy logo-icon"></i>
+      <span class="logo-text">RBLX·CUP</span>
+    </div>
+    <nav class="nav-links">
+      <a href="#"><i class="fas fa-home"></i> Home</a>
+      <a href="#"><i class="fas fa-gamepad"></i> Turniere</a>
+      <a href="#"><i class="fas fa-robux"></i> Preise</a>
+      <span class="btn-join"><i class="fas fa-rocket"></i> Join</span>
+    </nav>
+  </header>
+
+  <!-- HAUPTINHALT -->
+  <main class="hero">
+
+    <h1>🔥 ROBLOX TURNIERE</h1>
+    <p>
+      <i class="fas fa-trophy"></i> Spiele · Gewinne · Ruhm <i class="fas fa-crown"></i><br />
+      <span style="font-weight:300; font-size:0.9rem; color:#ccbbbb;">
+        Täglich Robux‑Preise in über 20 Spielen
+      </span>
+    </p>
+
+    <!-- Grid mit Spielen (Cards) – alle haben fade Klasse -->
+    <div class="game-grid">
+      <div class="game-card fade-section" id="card1">
+        <i class="fas fa-sword"></i>
+        <h3>BedWars</h3>
+        <p>1v1 / 4v4 Turniere</p>
+        <span class="robux-badge"><i class="fas fa-robux"></i> 500 +</span>
+      </div>
+      <div class="game-card fade-section" id="card2">
+        <i class="fas fa-futbol"></i>
+        <h3>Football</h3>
+        <p>2v2 &amp; Elfmeter</p>
+        <span class="robux-badge"><i class="fas fa-robux"></i> 350 +</span>
+      </div>
+      <div class="game-card fade-section" id="card3">
+        <i class="fas fa-car"></i>
+        <h3>Vehicle Sim</h3>
+        <p>Rennen &amp; Stunts</p>
+        <span class="robux-badge"><i class="fas fa-robux"></i> 800 +</span>
+      </div>
+      <div class="game-card fade-section" id="card4">
+        <i class="fas fa-skull"></i>
+        <h3>Arsenal</h3>
+        <p>FFA &amp; Team Deathmatch</p>
+        <span class="robux-badge"><i class="fas fa-robux"></i> 600 +</span>
+      </div>
+    </div>
+
+    <!-- zusätzlicher Text mit Fade -->
+    <div style="margin-top: 60px; width:100%; max-width: 800px; text-align:center;" class="fade-section" id="extraFade">
+      <p style="font-size:1.2rem; background:rgba(20,0,0,0.3); border-radius:60px; padding:16px 24px; backdrop-filter:blur(4px); border:1px solid rgba(255,60,60,0.1);">
+        <i class="fas fa-gem" style="color:#ff5555;"></i> 
+        Jede Woche <strong style="color:#ff7777;">+1000 Robux</strong> Bonus für aktive Mitglieder
+        <i class="fas fa-gem" style="color:#ff5555;"></i>
+      </p>
+    </div>
+
+    <div class="footer-note fade-section" id="footerFade">
+      <i class="fas fa-fire"></i>  ·  Community seit 2024  ·  <i class="fas fa-users"></i> 3.2k Mitglieder
+    </div>
+  </main>
+
+  <!-- ===== JAVASCRIPT: SCROLL FADE IN / OUT ===== -->
+  <script>
+    (function() {
+      "use strict";
+
+      // Alle Elemente mit Klasse .fade-section selektieren
+      const fadeElements = document.querySelectorAll('.fade-section');
+
+      // Intersection Observer mit erweiterten Optionen
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          // Sobald das Element sichtbar wird → Klasse 'visible' hinzufügen
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          } else {
+            // (optional) wieder ausblenden → für "fade out" beim Rausscrollen
+            entry.target.classList.remove('visible');
+          }
+        });
+      }, {
+        threshold: 0.2,        // 20% sichtbar → trigger
+        rootMargin: '0px 0px -20px 0px'  // leichter Offset
+      });
+
+      // Jedes Element beobachten
+      fadeElements.forEach(el => observer.observe(el));
+
+      // Zusätzlich: Header-Glow beim Scrollen leicht animieren (optional)
+      const header = document.querySelector('.header-glass');
+      let lastScroll = 0;
+      window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+        if (currentScroll > 80) {
+          header.style.backdropFilter = 'blur(18px) saturate(180%)';
+          header.style.boxShadow = '0 8px 40px rgba(255,0,0,0.3)';
+        } else {
+          header.style.backdropFilter = 'blur(12px) saturate(160%)';
+          header.style.boxShadow = '0 8px 32px rgba(255,0,0,0.15)';
+        }
+        lastScroll = currentScroll;
+      });
+
+      // kleine manuelle Initialisierung: falls Elemente schon sichtbar beim Laden
+      // aber IntersectionObserver triggert sofort, wenn sichtbar.
+      // trotzdem für ganz sicher: nach kurzer Verzögerung prüfen
+      setTimeout(() => {
+        fadeElements.forEach(el => {
+          const rect = el.getBoundingClientRect();
+          const winHeight = window.innerHeight;
+          if (rect.top < winHeight * 0.8 && rect.bottom > 0) {
+            el.classList.add('visible');
+          }
+        });
+      }, 200);
+
+    })();
+  </script>
+  <!-- Hinweis: Alle Cards & footer haben fade-section, 
+       sie werden beim Scrollen mit fade-in / out versehen. 
+       Header hat eigenes Glow-Pulsing via Keyframes + Scroll-Adaption. -->
+</body>
+</html>
