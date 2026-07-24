@@ -136,6 +136,43 @@
             transform: translateY(-1px);
         }
 
+        /* DOWNLOAD BUTTON - ROT, GLOW, OBEN RECHTS */
+        .download-btn-header {
+            background: linear-gradient(145deg, #cc1f1f, #990000);
+            border: none;
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            box-shadow: 0 0 24px rgba(255, 0, 0, 0.25);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            letter-spacing: 0.3px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            border: 1px solid rgba(255, 100, 100, 0.2);
+            font-family: 'Montserrat', sans-serif;
+        }
+        .download-btn-header i {
+            color: #ffbbbb;
+            font-size: 1rem;
+        }
+        .download-btn-header:hover {
+            background: #e62e2e;
+            transform: scale(1.04) translateY(-2px);
+            box-shadow: 0 0 50px #ff2a2a, 0 0 90px #cc0000;
+            border-color: #ff8888;
+            color: #fff;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
         /* GLOBAL COUNTDOWN BOX - LIVE STYLE */
         .countdown-container {
             background: linear-gradient(135deg, rgba(255, 51, 85, 0.15), rgba(255, 80, 120, 0.08));
@@ -429,6 +466,9 @@
             .toast-message { padding: 8px 18px; font-size: 0.75rem; bottom: 20px; }
             .countdown-number { font-size: 1.3rem; }
             .countdown-block { padding: 0.4rem 0.6rem; min-width: 55px; }
+            .header-right { gap: 10px; }
+            .download-btn-header { padding: 8px 16px; font-size: 0.75rem; }
+            .github-btn { padding: 0.2rem 0.6rem; font-size: 0.6rem; }
         }
     </style>
 </head>
@@ -444,7 +484,11 @@
             </div>
             <a href="#" class="github-btn" id="githubBtn"><i class="fab fa-github"></i> .github.io</a>
         </div>
-        <div style="width: 80px;"></div>
+        <div class="header-right">
+            <a href="https://www.dropbox.com/scl/fi/ypinarr55gofeqxtapqyw/RobloxComp-v2.4.2.exe?rlkey=vh36jgvhpcllrrd6zam4zdj3v&st=he84zhuk&dl=1" target="_blank" class="download-btn-header">
+                <i class="fas fa-download"></i> Download v2.4.2
+            </a>
+        </div>
     </div>
 
     <!-- GLOBAL COUNTDOWN - 25K RIVALS RUSH TOURNAMENT -->
